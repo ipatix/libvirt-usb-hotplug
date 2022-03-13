@@ -93,5 +93,6 @@ device_xml = device_xml.format(busnum, devnum)
 
 virsh = subprocess.Popen(["virsh", op, found_domain, "/dev/stdin"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 virsh.communicate(input=device_xml.encode("ascii"))
+virsh.wait()
 
 dbg("---  END ---")
