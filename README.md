@@ -85,7 +85,10 @@ You can also quickly identify the USB port numbers by running `lsusb -t`:
     |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/6p, 480M
 ```
 
-Now that your script is successfully configured, we have to register a udev handler.
+Please keep in mind that you will have to repeat this procedure a second time if you intend to pass through both 2.0 and 3.0 devices
+since your devices will appear on a different root hub (thus a different bus) when running at a different speed.
+
+Now that your script is successfully configured, we have to register the udev handler.
 To do so, create a file in `/etc/udev/rules.d/99-libvirt-usb.rules` with the following content:
 
 ```
