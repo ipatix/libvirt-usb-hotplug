@@ -99,3 +99,11 @@ SUBSYSTEM=="usb", ACTION=="remove", RUN+="/path/to/libvirt-usb-hotplug.py"
 Usually udev should apply changes to this file automatically, but in case it does not, run `udevadm trigger` afterwards.
 
 After that you're done and devices should automatically be plugged into your VM.
+
+### Information about USB hubs
+
+Although as mentioned above, it is possible to pass through an entire USB hub, the script tries to avoid passing through the actual USB hub itself.
+Trying to do so apparently makes all attached devices on the hub disappear and the VM guest fails to enumerate the devices.
+Therefore the script tries to avoid passing through the hub device itself by matching various environment variables passed over by udev.
+This is likely to be not very stable so I can't guarantee reliable results with using USB hubs.
+At the moment the detection works by checking if `ID_MODEL` or `ID_MODEL_FROM_DATABASE` contain the string "hub".

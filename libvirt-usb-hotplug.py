@@ -59,15 +59,24 @@ if devpath == "":
     sys.exit(0)
 devpath = os.path.realpath(devpath)
 
+hub_search = [ "ID_MODEL", "ID_MODEL_FROM_DATABASE" ]
+for s in hub_search:
+    if "hub" in (os.getenv(s) or "").lower():
+        dbg("don't care about USB hubs: " + devpath)
+        sys.exit(0)
+
 # find domain for current device
 
 found_domain = ""
 
 for domain, ports in config:
     for port in ports:
-        if devpath.find(port) >= 0:
-            found_domain = domain
-            break
+        if port != devpath and (port + "/") not in devpath:
+            continue
+        # If device path does match, but there are sub devices available
+        # ignore this device (don't pass through a USB hub itself, causes problems)
+        found_domain = domain
+        break
 
     if found_domain != "":
         break
@@ -86,6 +95,8 @@ elif action == "remove":
     op = "detach-device"
 else:
     dbg("Unsupported ACTION: " + action)
+
+dbg("busnum={} devnum={} devpath={}".format(busnum, devnum, devpath))
 
 
 device_xml = '<hostdev mode="subsystem" type="usb"><source><address bus="{}" device="{}"/></source></hostdev>'
